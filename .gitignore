@@ -1,0 +1,14 @@
+# Ignore the virtual environment
+venv/
+ENV/
+
+# Ignore Python cache (compiled files)
+__pycache__/
+*.py[cod]
+
+# Ignore local databases (Professional tip: don't upload your raw DB)
+data/*.db
+
+# Ignore OS specific files
+.DS_Store
+Thumbs.db
