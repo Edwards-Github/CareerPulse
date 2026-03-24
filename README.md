@@ -1,6 +1,6 @@
 # 🚀 CareerPulse: Career Intelligence Tracker
 
-CareerPulse is a production-grade backend system designed to automate the job search lifecycle. It moves beyond simple tracking by integrating real-time API data and secure persistence.
+CareerPulse is a modular backend system designed to transform a chaotic job search into a data-driven strategy. Unlike simple spreadsheets, CareerPulse leverages asynchronous API fetching, secure OAuth2 authentication, and a relational SQL engine to provide deep insights into application trends and company data.
 
 ## 🛠️ Tech Stack & Concepts
 * **Language:** Python 3.12+
