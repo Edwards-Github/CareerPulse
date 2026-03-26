@@ -1,11 +1,24 @@
-import hashlib
-from typing import Dict, Optional
+import hashlib, re
+from typing import Dict, Optional, Callable
 
 class URLShortener:
 	def __init__(self):
 		# Temporary storage (Week 3 we move this to SQLite!)
 		self.url_map: Dict[str, str] = {}
 
+	@staticmethod
+	def validate_url_decorator(func: Callable) -> bool:
+		def wrapper(self, url: str): # Keep 'self' here because generate_code needs it!
+			# The "Security Check"
+			pattern = re.compile(r'^https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}.*$')
+			if not pattern.match(url):
+				raise ValueError(f"Invalid URL: {url}")
+
+			# If valid, run the original function
+			return func(self, url)
+		return wrapper
+
+	@validate_url_decorator
 	def generate_code(self, url: str) -> str:
 		# Professional way to create a unique ID
 		# url.encode() turns string into bytes. Input: str ("https://google.com") Output: Byte str (b"https://google.com")
@@ -30,3 +43,12 @@ if __name__ == "__main__":
     short = tracker.shorten(my_link)
     print(f"Short Code: {short}")
     print(f"Original: {tracker.resolve(short)}")
+    
+try:
+	# This will work
+	print(f"Valid: {tracker.shorten('https://google.com')}")
+
+	# This will trigger the Decorator's ValueError
+	print(f"Invalid: {tracker.shorten('not-a-link')}")
+except ValueError as e:
+	print(f"Caught by Decorator: {e}")
