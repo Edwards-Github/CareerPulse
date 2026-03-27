@@ -1,10 +1,20 @@
-import hashlib, re
+import hashlib, re, logging, functools
 from typing import Dict, Optional, Callable
+
+# Configure logging once at the top level. If put inside class you are re-initializing logging.basicConfig every decorator call. Also basicConfig can only be called once per session. Subsequent calls are ignored
+logging.basicConfig(
+	level=logging.INFO, 
+	format='%(asctime)s - %(message)s',
+	filename='career_pulse.log', # This creates the physical file
+	filemode='a'
+	)
 
 class URLShortener:
 	def __init__(self):
 		# Temporary storage (Week 3 we move this to SQLite!)
 		self.url_map: Dict[str, str] = {}
+
+	# --- DECORATORS GO FIRST ---
 
 	@staticmethod
 	def validate_url_decorator(func: Callable) -> bool:
@@ -18,7 +28,16 @@ class URLShortener:
 			return func(self, url)
 		return wrapper
 
-	@validate_url_decorator
+	@staticmethod
+	def logger(orig_func: Callable) -> Callable:
+		@functools.wraps(orig_func) # Preserves identity so would return the name of original function instead of wrapper
+		def wrapper(self, *args, **kwargs):
+			logging.info(f'Running "{orig_func.__name__} with args: {args}"')
+			return orig_func(self, *args, **kwargs)
+		return wrapper
+
+	@logger # Layer 1: Log the attempt
+	@validate_url_decorator # Layer 2: Check the URL
 	def generate_code(self, url: str) -> str:
 		# Professional way to create a unique ID
 		# url.encode() turns string into bytes. Input: str ("https://google.com") Output: Byte str (b"https://google.com")
@@ -36,6 +55,7 @@ class URLShortener:
 	def resolve(self, code: str) -> Optional[str]:
 		return self.url_map.get(code)
 
+
 # Quick Test
 if __name__ == "__main__":
     tracker = URLShortener()
@@ -52,3 +72,24 @@ try:
 	print(f"Invalid: {tracker.shorten('not-a-link')}")
 except ValueError as e:
 	print(f"Caught by Decorator: {e}")
+
+print("--- Starting Logger Test ---")
+# 2. Test a Valid URL (Should log AND work)
+try:
+    test_url = "https://www.google.com/search?q=python+decorators"
+    print(f"Testing valid URL: {test_url}")
+    short_code = tracker.shorten(test_url)
+    print(f"✅ Success! Short code: {short_code}")
+except Exception as e:
+    print(f"❌ Unexpected Error: {e}")
+
+# 3. Test an Invalid URL (Should log the attempt, then show the error)
+print("\nTesting invalid URL...")
+try:
+    tracker.shorten("ftp://invalid-link")
+except ValueError as e:
+    print(f"🎯 Caught by Validator: {e}")
+
+# 4. Instructions to verify the file
+print("\n--- Test Complete ---")
+print("Check your terminal or the 'career_pulse.log' file to see the results.")
