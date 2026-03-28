@@ -12,3 +12,6 @@ data/*.db
 # Ignore OS specific files
 .DS_Store
 Thumbs.db
+
+# Ignore career_pulse.log
+career_pulse.log

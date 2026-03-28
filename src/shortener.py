@@ -67,9 +67,10 @@ if __name__ == "__main__":
 try:
 	# This will work
 	print(f"Valid: {tracker.shorten('https://google.com')}")
-
+	print(f"Valid: {tracker.shorten('https://www.youtube.com/shorts/HKBuA4Ygego')}")
 	# This will trigger the Decorator's ValueError
 	print(f"Invalid: {tracker.shorten('not-a-link')}")
+	print(f"Invalid: {tracker.shorten('invalid link')}")
 except ValueError as e:
 	print(f"Caught by Decorator: {e}")
 
