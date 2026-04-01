@@ -11,7 +11,7 @@ async def fetch_user_repos(username: str):
 # 1. Wrap your "Top Level" code in an async function
 async def main():
 	username = "Edwards-Github"
-	repos = await fetch_user_repos("Edwards-Github")
+	repos = await fetch_user_repos(username)
 
 	print(f"--- Found {len(repos)} Repositories ---")
 
