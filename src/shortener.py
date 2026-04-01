@@ -1,4 +1,4 @@
-import hashlib, re, logging, functools
+import hashlib, re, logging, functools, database
 from typing import Dict, Optional, Callable
 
 # Configure logging once at the top level. If put inside class you are re-initializing logging.basicConfig every decorator call. Also basicConfig can only be called once per session. Subsequent calls are ignored
